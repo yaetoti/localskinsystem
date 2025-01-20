@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "localskinsystem",
+  "version": "${version}",
+  "name": "Local Skin System",
+  "description": "A mod that allows players to use skins from local system.",
+  "authors": ["yaetoti___"],
+  "contact": {},
+  "license": "GPL-3.0",
+  "icon": "assets/localskinsystem/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.yaetoti.localskinsystem.client.MainClient"
+    ],
+    "main": [
+      "com.yaetoti.localskinsystem.Main"
+    ]
+  },
+  "mixins": [
+    "localskinsystem.mixins.json",
+    {
+      "config": "localskinsystem.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
