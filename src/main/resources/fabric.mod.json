@@ -17,6 +17,7 @@
       "com.yaetoti.localskinsystem.Main"
     ]
   },
+  "accessWidener": "localskinsystem.accesswidener",
   "mixins": [
     "localskinsystem.mixins.json",
     {

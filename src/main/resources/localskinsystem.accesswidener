@@ -1,0 +1,3 @@
+accessWidener v2 named
+accessible class net/minecraft/client/texture/PlayerSkinProvider$Key
+accessible method net/minecraft/client/texture/PlayerSkinProvider$Key <init> (Ljava/util/UUID;Lcom/mojang/authlib/properties/Property;)V
