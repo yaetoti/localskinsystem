@@ -1,6 +1,6 @@
 package com.yaetoti.localskinsystem.network.packet.s2c.custom;
 
-import com.yaetoti.localskinsystem.Main;
+import com.yaetoti.localskinsystem.Mod;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -14,7 +14,7 @@ public record UpdateTexturesS2CPayload(
   byte[] capeData,
   byte[] elytraData
 ) implements CustomPayload {
-  public static final Identifier PACKET_ID = Main.GetId("update_textures");
+  public static final Identifier PACKET_ID = Mod.GetId("update_textures");
   public static final Id<UpdateTexturesS2CPayload> ID = new Id<>(PACKET_ID);
   public static final PacketCodec<RegistryByteBuf, UpdateTexturesS2CPayload> CODEC = PacketCodec.of(UpdateTexturesS2CPayload::Write, UpdateTexturesS2CPayload::new);
 

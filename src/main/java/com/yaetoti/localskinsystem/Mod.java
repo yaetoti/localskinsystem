@@ -1,6 +1,7 @@
 package com.yaetoti.localskinsystem;
 
 import com.yaetoti.localskinsystem.config.ConfigManager;
+import com.yaetoti.localskinsystem.network.handler.DisconnectHandler;
 import com.yaetoti.localskinsystem.network.handler.UploadTexturesHandler;
 import com.yaetoti.localskinsystem.network.handler.RequestTexturesHandler;
 import com.yaetoti.localskinsystem.network.packet.c2s.custom.UploadTexturesC2SPayload;
@@ -8,6 +9,7 @@ import com.yaetoti.localskinsystem.network.packet.c2s.custom.RequestTexturesC2SP
 import com.yaetoti.localskinsystem.network.packet.s2c.custom.UpdateTexturesS2CPayload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
@@ -16,13 +18,15 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
-public class Main implements ModInitializer {
+public class Mod implements ModInitializer {
   public static final String MOD_ID = "localskinsystem";
-  public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+  public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID + ":common");
 
   @Override
   public void onInitialize() {
     ConfigManager.Get().LoadRestoreConfig();
+
+    ServerPlayConnectionEvents.DISCONNECT.register(new DisconnectHandler());
 
     // Packet registration
     // C2S

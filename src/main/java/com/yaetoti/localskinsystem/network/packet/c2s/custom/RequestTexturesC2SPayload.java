@@ -1,6 +1,6 @@
 package com.yaetoti.localskinsystem.network.packet.c2s.custom;
 
-import com.yaetoti.localskinsystem.Main;
+import com.yaetoti.localskinsystem.Mod;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 public record RequestTexturesC2SPayload(
   String username
 ) implements CustomPayload {
-  public static final Identifier PACKET_ID = Main.GetId("request_textures");
+  public static final Identifier PACKET_ID = Mod.GetId("request_textures");
   public static final Id<RequestTexturesC2SPayload> ID = new Id<>(PACKET_ID);
   public static final PacketCodec<RegistryByteBuf, RequestTexturesC2SPayload> CODEC = PacketCodec.of(RequestTexturesC2SPayload::Write, RequestTexturesC2SPayload::new);
 

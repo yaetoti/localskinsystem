@@ -49,13 +49,16 @@ public final class SkinCacheServer {
       .completeOnTimeout(null, 5, TimeUnit.SECONDS);
     m_skinWaiters.put(username, waiter);
 
+    // TODO FUCK THE FUCK
+    Mod.LOGGER.warn("Waiters queue size: " + m_skinWaiters.size());
+
     // Waiter put must be synchronized
     m_skinCacheLock.readLock().unlock();
     return waiter;
   }
 
   public void PutTextures(String username, TexturesData data) {
-    System.out.println("Write-locking server cache");
+    Mod.LOGGER.info("Write-locking server cache");
     m_skinCacheLock.writeLock().lock();
     if (data == null) {
       m_skinCache.remove(username);
@@ -63,26 +66,37 @@ public final class SkinCacheServer {
       m_skinCache.put(username, data);
     }
     m_skinCacheLock.writeLock().unlock();
-    System.out.println("Server cache has been updated");
+    Mod.LOGGER.info("Server cache has been updated");
 
     var waiter = m_skinWaiters.get(username);
     if (waiter != null) {
-      System.out.println("Notifying waiter");
-      waiter.complete(data);
+      // TODO nasty but should work
+      if (waiter.isDone()) {
+        waiter.obtrudeValue(data);
+      } else {
+        waiter.complete(data);
+      }
+
       m_skinWaiters.remove(username);
-      System.out.println("Waiter notified");
+      Mod.LOGGER.info("Waiter notified");
     }
   }
 
   public void RemoveTextures(String username) {
     m_skinCacheLock.writeLock().lock();
     m_skinCache.remove(username);
-    m_skinCacheLock.writeLock().unlock();
 
     var waiter = m_skinWaiters.get(username);
     if (waiter != null) {
-      waiter.complete(null);
+      // TODO nasty but should work
+      if (waiter.isDone()) {
+        waiter.obtrudeValue(null);
+      } else {
+        waiter.complete(null);
+      }
+
       m_skinWaiters.remove(username);
     }
+    m_skinCacheLock.writeLock().unlock();
   }
 }

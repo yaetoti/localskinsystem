@@ -3,7 +3,7 @@ package com.yaetoti.localskinsystem.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
-import com.yaetoti.localskinsystem.Main;
+import com.yaetoti.localskinsystem.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,7 @@ public final class ConfigManager {
   }
 
   public boolean LoadConfig() {
-    Path configFilePath = Main.GetConfigFilePath();
+    Path configFilePath = Mod.GetConfigFilePath();
     if (!Files.isRegularFile(configFilePath)) {
       return false;
     }
@@ -52,15 +52,15 @@ public final class ConfigManager {
   }
 
   public void SaveConfig() {
-    Path configFilePath = Main.GetConfigFilePath();
+    Path configFilePath = Mod.GetConfigFilePath();
     Path configDirPath = configFilePath.getParent();
 
     if (!Files.isDirectory(configDirPath)) {
       try {
         Files.createDirectory(configDirPath);
       } catch (IOException e) {
-        Main.LOGGER.error("Failed to create config directory.");
-        Main.LOGGER.error(e.getMessage());
+        Mod.LOGGER.error("Failed to create config directory.");
+        Mod.LOGGER.error(e.getMessage());
       }
     }
 
@@ -68,8 +68,8 @@ public final class ConfigManager {
       try {
         Files.createFile(configFilePath);
       } catch (IOException e) {
-        Main.LOGGER.error("Could not create config file.");
-        Main.LOGGER.error(e.getMessage());
+        Mod.LOGGER.error("Could not create config file.");
+        Mod.LOGGER.error(e.getMessage());
         return;
       }
     }
@@ -77,8 +77,8 @@ public final class ConfigManager {
     try (FileOutputStream fos = new FileOutputStream(configFilePath.toFile())) {
       fos.write(m_gson.toJson(m_configData).getBytes());
     } catch (IOException e) {
-      Main.LOGGER.error("Failed to write config file.");
-      Main.LOGGER.error(e.getMessage());
+      Mod.LOGGER.error("Failed to write config file.");
+      Mod.LOGGER.error(e.getMessage());
     }
   }
 

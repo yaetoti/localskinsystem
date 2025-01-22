@@ -1,5 +1,6 @@
 package com.yaetoti.localskinsystem.network.handler;
 
+import com.yaetoti.localskinsystem.Mod;
 import com.yaetoti.localskinsystem.SkinCacheServer;
 import com.yaetoti.localskinsystem.TexturesData;
 import com.yaetoti.localskinsystem.network.packet.c2s.custom.RequestTexturesC2SPayload;
@@ -12,10 +13,10 @@ import java.util.function.Consumer;
 public class RequestTexturesHandler implements ServerPlayNetworking.PlayPayloadHandler<RequestTexturesC2SPayload> {
   @Override
   public void receive(RequestTexturesC2SPayload payload, ServerPlayNetworking.Context context) {
-    System.out.println("Received RequestTexturesC2SPayload from: " + context.player().getGameProfile().getName());
-    System.out.println("Requested skin for: " + payload.username());
+    Mod.LOGGER.info("Received RequestTexturesC2SPayload from: " + context.player().getGameProfile().getName());
+    Mod.LOGGER.info("Requested skin for: " + payload.username());
 
-    System.out.println("Creating new waiter for: " + payload.username());
+    Mod.LOGGER.info("Creating new waiter for: " + payload.username());
     SkinCacheServer.Get().GetTexturesWaiter(payload.username())
       .thenAccept(new TexturesDataConsumer(payload, context));
   }
@@ -37,11 +38,12 @@ public class RequestTexturesHandler implements ServerPlayNetworking.PlayPayloadH
       }
 
       if (data == null) {
-        System.out.println("No textures found for: " + m_payload.username());
+        Mod.LOGGER.info("No textures found for: " + m_payload.username());
+        // TODO NoTexturesPayload
         return;
       }
 
-      System.out.println("Textures found for: " + m_payload.username());
+      Mod.LOGGER.info("Textures found for: " + m_payload.username());
       m_context.responseSender().sendPacket(
         new UpdateTexturesS2CPayload(
           m_payload.username(),

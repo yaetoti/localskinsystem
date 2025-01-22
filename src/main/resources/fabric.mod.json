@@ -11,10 +11,10 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "com.yaetoti.localskinsystem.client.MainClient"
+      "com.yaetoti.localskinsystem.client.ModClient"
     ],
     "main": [
-      "com.yaetoti.localskinsystem.Main"
+      "com.yaetoti.localskinsystem.Mod"
     ]
   },
   "accessWidener": "localskinsystem.accesswidener",

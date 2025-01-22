@@ -1,12 +1,16 @@
 package com.yaetoti.localskinsystem.client;
 
 import com.google.common.cache.*;
+import com.yaetoti.localskinsystem.client.utils.LocalSkinSupplier;
 import com.yaetoti.localskinsystem.client.utils.TextureHelper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.SkinTextures;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public final class SkinCacheClient {
   private static volatile SkinCacheClient instance;
@@ -35,9 +39,14 @@ public final class SkinCacheClient {
     }
   }
 
+  @NotNull
   public CompletableFuture<Optional<SkinTextures>> GetSkinLoader(String username) {
-    //System.out.println("Client Cache Access for: " + username);
     return m_loaderCache.getUnchecked(username);
+  }
+
+  @Nullable
+  public CompletableFuture<Optional<SkinTextures>> GetSkinLoaderIfPresent(String username) {
+    return m_loaderCache.getIfPresent(username);
   }
 
   public void Invalidate(String username) {
@@ -48,26 +57,30 @@ public final class SkinCacheClient {
     m_loaderCache.invalidateAll();
   }
 
-  public void UpdateCache(String username, SkinTextures textures) {
+  public void UpdateCache(@NotNull String username, @Nullable SkinTextures textures) {
     var future = m_loaderCache.getIfPresent(username);
     if (future == null) {
+      // Place if missing
       m_loaderCache.put(username, CompletableFuture.completedFuture(Optional.ofNullable(textures)));
       return;
     }
 
     if (future.isDone()) {
+      // If completed - replace with another result
       m_loaderCache.put(username, CompletableFuture.completedFuture(Optional.ofNullable(textures)));
       return;
     }
 
+    // Complete incomplete future
     future.complete(Optional.ofNullable(textures));
   }
 
   private static class SkinCacheLoader extends CacheLoader<String, CompletableFuture<Optional<SkinTextures>>> {
     @Override
     public @NotNull CompletableFuture<Optional<SkinTextures>> load(@NotNull String username) {
-      System.out.println("Creating new loader for " + username);
-      return new CompletableFuture<>();
+      CompletableFuture<Optional<SkinTextures>> loader = new CompletableFuture<>();
+      loader.completeOnTimeout(Optional.empty(), 5, TimeUnit.SECONDS);
+      return loader;
     }
   }
 
@@ -84,7 +97,7 @@ public final class SkinCacheClient {
         return;
       }
 
-      System.out.println("Removing textures from cache");
+      ModClient.LOGGER.info("Removing textures from cache");
       TextureHelper.UnregisterTextures(textures.get());
     }
   }
